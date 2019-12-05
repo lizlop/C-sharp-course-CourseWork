@@ -1,0 +1,50 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+    <div class="text-center">
+        <h1 class="display-4">The Vigenère Encoder</h1>
+        <p>Welcome to my Vigenere Encoder. Put you text in the field below or download a text file, write the key, choose an option and you will get your text back being encrypted/decrypted ;) Enjoy!</p>
+    </div>
+    <form method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Encoder.Text" for="inputText">Write your text here</label>
+            <textarea asp-for="Encoder.Text" id="inputText" name="Encoder.Text" class="form-control" placeholder="Enter the text" rows="5"></textarea>
+            <span asp-validation-for="Encoder.Text" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Encoder.File" for="inputFile">Or download a text file</label>
+            <input asp-for="Encoder.File" type="file" name="Encoder.File" class="form-control-file" id="inputFile" accept=".txt, .docx" aria-describedby="fileHelp">
+            <small id="fileHelp" class="form-text text-muted">File should have .txt or .docx extention</small>
+            <span asp-validation-for="Encoder.File" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Encoder.Key" for="inputKey">Key for the cipher</label>
+            <input asp-for="Encoder.Key" type="text" name="Encoder.Key" class="form-control" id="inputKey" placeholder="Enter the key">
+            <span asp-validation-for="Encoder.Key" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="mode" id="encryptMode" value="0" checked>
+                <label class="form-check-label" for="encryptMode">
+                    Encrypt the text
+                </label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="mode" id="decryptMode" value="1">
+                <label class="form-check-label" for="decryptMode">
+                    Decrypt the text
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Get the result!</button>
+        </div>
+    </form>
+    <div class="form-group">
+        <label asp-for="Result" for="outputText">Resulting text</label>
+        <textarea asp-for="Result" id="outputText" name="Result" class="form-control" rows="5"></textarea>
+    </div>
