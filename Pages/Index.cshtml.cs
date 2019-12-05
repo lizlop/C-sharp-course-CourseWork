@@ -18,6 +18,8 @@ namespace CourseWork.Pages
             _logger = logger;
         }
         [BindProperty]
+        public bool SetAlphabet { get; set; }
+        [BindProperty]
         public Models.Encoder Encoder { get; set; }
         [BindProperty]
         public string Result { get; set; }
@@ -26,7 +28,7 @@ namespace CourseWork.Pages
             if (ModelState.IsValid)
             {
                 var mode = Request.Form["mode"];
-                Result = Encoder.Vigener(mode == "0" ? Models.Encoder.Mode.ENCRYPT : Models.Encoder.Mode.DECRYPT, false);
+                Result = Encoder.Vigener(mode == "0" ? Models.Encoder.Mode.ENCRYPT : Models.Encoder.Mode.DECRYPT);
             }
         }
         public void OnGet()

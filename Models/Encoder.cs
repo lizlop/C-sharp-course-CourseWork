@@ -14,13 +14,13 @@ namespace CourseWork.Models
         private string alphabet;
         public string Alphabet {
             get 
-            { return alphabet ?? "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"; }
+            { return alphabet ?? (alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"); }
             set
-            { alphabet = value; }
+            { alphabet = CorrectAlphabet(value); }
         }
         public enum Mode { ENCRYPT, DECRYPT};
         [Required(ErrorMessage = "A key is required for this cipher")]
-        public string Key { get; set; }
+        public string Key { get; set; } 
         private string text;
         public string Text { 
             get 
@@ -34,20 +34,31 @@ namespace CourseWork.Models
             string str = "";
             return str;
         }
+        private string CorrectAlphabet(string str)
+        {
+            StringBuilder alphabet = new StringBuilder();
+            foreach (var c in str) if (!alphabet.ToString().Contains(c)) alphabet.Append(c);
+            return alphabet.ToString();
+        }
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
+            if (!CheckKey())
+            {
+                yield return new ValidationResult("The key should consist only of alphabet characters: \"" + Alphabet + "\"", new List<string> { "Key" });
+            }
             if ((Text == null || Text == "") && File == null)
             {
                 yield return new ValidationResult("You should enter the text or upload a text file", new List<string> { "Text", "File" });
             }
         }
-        private void CheckKey()
+        private bool CheckKey()
         {
-            foreach (var c in Key) if (!Alphabet.Contains(c)) throw new Exception("Key contains non-alphabet characters");
+            foreach (var c in Key) if (!Alphabet.Contains(c)) return false;
+            return true;
         }
-        public string Vigener(Mode mode, bool checkKey)
+        public string Vigener(Mode mode)
         {
-            if (checkKey) CheckKey();
+            if (!CheckKey()) throw new Exception("Incorrect key value");
             int charIndex; // index in alphabet
             int msgIndex = 0; // index in message letters
             int index = 0; // index in all message chars
