@@ -38,7 +38,7 @@ namespace CourseWork.Models
         {
             if ((Text == null || Text == "") && File == null)
             {
-                yield return new ValidationResult("You should enter the text or download a text file", new List<string> { "Text", "File" });
+                yield return new ValidationResult("You should enter the text or upload a text file", new List<string> { "Text", "File" });
             }
         }
         private void CheckKey()

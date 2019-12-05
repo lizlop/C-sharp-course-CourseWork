@@ -6,7 +6,9 @@
 
     <div class="text-center">
         <h1 class="display-4">The Vigenère Encoder</h1>
-        <p>Welcome to my Vigenere Encoder. Put you text in the field below or download a text file, write the key, choose an option and you will get your text back being encrypted/decrypted ;) Enjoy!</p>
+    </div>
+    <div class="text-sm-left">
+        <p>Welcome to my Vigenere Encoder. Put your text in the field below or upload a text file, write the key, choose an option and you will get your text back being encrypted/decrypted ;) Enjoy!</p>
     </div>
     <form method="post" enctype="multipart/form-data">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -16,7 +18,7 @@
             <span asp-validation-for="Encoder.Text" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="Encoder.File" for="inputFile">Or download a text file</label>
+            <label asp-for="Encoder.File" for="inputFile">Or upload a text file</label>
             <input asp-for="Encoder.File" type="file" name="Encoder.File" class="form-control-file" id="inputFile" accept=".txt, .docx" aria-describedby="fileHelp">
             <small id="fileHelp" class="form-text text-muted">File should have .txt or .docx extention</small>
             <span asp-validation-for="Encoder.File" class="text-danger"></span>
