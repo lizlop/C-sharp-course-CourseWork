@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,11 +17,17 @@ namespace CourseWork.Models
             get 
             { return alphabet ?? (alphabet = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"); }
             set
-            { alphabet = CorrectAlphabet(value); }
+            { alphabet = CorrectAlphabet(value.ToLower()); }
         }
         public enum Mode { ENCRYPT, DECRYPT};
+        private string key;
         [Required(ErrorMessage = "A key is required for this cipher")]
-        public string Key { get; set; } 
+        public string Key {
+            get
+            { return key; }
+            set
+            { key = value.ToLower(); } 
+        } 
         private string text;
         public string Text { 
             get 
@@ -31,8 +38,19 @@ namespace CourseWork.Models
         public IFormFile File { get; set; }
         private string FileParse()
         {
-            string str = "";
-            return str;
+            StringBuilder stringBuilder = new StringBuilder();
+            if (File.FileName.Contains(".txt"))
+            {
+                using (var stream = new StreamReader(File.OpenReadStream()))
+                {
+                    while (stream.Peek() >= 0) stringBuilder.Append(stream.ReadLine());
+                }
+            }
+            else if (File.FileName.Contains(".docx"))
+            {
+
+            }
+            return stringBuilder.ToString();
         }
         private string CorrectAlphabet(string str)
         {
@@ -46,7 +64,7 @@ namespace CourseWork.Models
             {
                 yield return new ValidationResult("The key should consist only of alphabet characters: \"" + Alphabet + "\"", new List<string> { "Key" });
             }
-            if ((Text == null || Text == "") && File == null)
+            if ((Text == null || Text == "") && (File == null || File.Length == 0))
             {
                 yield return new ValidationResult("You should enter the text or upload a text file", new List<string> { "Text", "File" });
             }
