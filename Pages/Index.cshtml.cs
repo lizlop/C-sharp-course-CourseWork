@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -29,6 +30,15 @@ namespace CourseWork.Pages
             {
                 var mode = Request.Form["mode"];
                 Result = Encoder.Vigener(mode == "0" ? Models.Encoder.Mode.ENCRYPT : Models.Encoder.Mode.DECRYPT);
+                if (Encoder.File != null && Encoder.File.Length != 0)
+                {
+                    /*Response.Clear();
+                    Response.Headers.Clear();
+                    Response.Headers.Add("Content-Disposition", "attachment; filename=" + Encoder.File.FileName);
+                    Response.Headers.Add("Content-Length", Encoder.File.Length.ToString());
+                    Response.ContentType = "multipart/form-data";
+                    await Response.SendFileAsync("wwwroot\\uploads\\document" + (Encoder.File.FileName.EndsWith(".docx") ? ".docx" : ".txt"));*/
+                }
             }
         }
         public void OnGet()

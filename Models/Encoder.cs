@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -28,30 +30,8 @@ namespace CourseWork.Models
             set
             { key = value.ToLower(); } 
         } 
-        private string text;
-        public string Text { 
-            get 
-            { return text ?? (text = FileParse()); } 
-            set 
-            { text = value; } 
-        }
+        public string Text { get; set; }
         public IFormFile File { get; set; }
-        private string FileParse()
-        {
-            StringBuilder stringBuilder = new StringBuilder();
-            if (File.FileName.Contains(".txt"))
-            {
-                using (var stream = new StreamReader(File.OpenReadStream()))
-                {
-                    while (stream.Peek() >= 0) stringBuilder.Append(stream.ReadLine());
-                }
-            }
-            else if (File.FileName.Contains(".docx"))
-            {
-
-            }
-            return stringBuilder.ToString();
-        }
         private string CorrectAlphabet(string str)
         {
             StringBuilder alphabet = new StringBuilder();
@@ -75,6 +55,46 @@ namespace CourseWork.Models
             return true;
         }
         public string Vigener(Mode mode)
+        {
+            if (Text == null)
+            {
+                if (File == null || File.Length == 0) throw new Exception("There is no text to encode");
+                else return VigenerFromFile(mode, File);
+            }
+            else return VigenerFromString(mode, Text);
+        }
+        private string VigenerFromFile(Mode mode, IFormFile File)
+        {
+            StringBuilder stringBuilder = new StringBuilder();
+            if (File.FileName.Contains(".txt"))
+            {
+                using (var stream = new StreamReader(File.OpenReadStream()))
+                {
+                    while (stream.Peek() >= 0) stringBuilder.Append(stream.ReadLine());
+                }
+                stringBuilder = new StringBuilder(VigenerFromString(mode, stringBuilder.ToString()));
+                using (var fileStream = new StreamWriter("wwwroot\\uploads\\document.txt"))
+                    fileStream.WriteLine(stringBuilder.ToString());
+            }
+            else if (File.FileName.Contains(".docx"))
+            {
+                using (var reader = File.OpenReadStream())
+                using (var fileStream = new FileStream("wwwroot\\uploads\\document.docx", FileMode.Create))
+                    reader.CopyTo(fileStream);
+                using (var fileStream = new FileStream("wwwroot\\uploads\\document.docx", FileMode.Open))
+                using (WordprocessingDocument document = WordprocessingDocument.Open(fileStream, true))
+                {
+                    var paragraphs = document.MainDocumentPart.Document.Body.Elements<Paragraph>();
+                    foreach (var para in paragraphs)
+                        foreach (var run in para.Elements<Run>())
+                            foreach (var text in run.Elements<Text>())
+                                stringBuilder.AppendLine(text.Text = VigenerFromString(mode, text.Text));
+                }
+            }
+            else throw new Exception("Invalid file extention");
+            return stringBuilder.ToString();
+        }
+        public string VigenerFromString(Mode mode, string Text)
         {
             if (!CheckKey()) throw new Exception("Incorrect key value");
             int charIndex; // index in alphabet
