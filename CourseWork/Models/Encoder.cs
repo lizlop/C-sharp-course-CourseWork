@@ -5,10 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace CourseWork.Models
 {
@@ -23,6 +20,7 @@ namespace CourseWork.Models
         }
         public enum Mode { ENCRYPT, DECRYPT};
         private string key;
+
         [Required(ErrorMessage = "A key is required for this cipher")]
         public string Key {
             get

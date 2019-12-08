@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
@@ -24,34 +18,25 @@ namespace CourseWork.Pages
         public Models.Encoder Encoder { get; set; }
         [BindProperty]
         public string Result { get; set; }
-        public IActionResult GetFile()
-        {
-            // Путь к файлу
-            string filePath = "wwwroot\\uploads\\document" + (Encoder.File.FileName.EndsWith(".docx") ? ".docx" : ".txt");
-            // Тип файла - content-type
-            string fileType = "application/octet-stream";
-            // Имя файла - необязательно
-            string fileName = Encoder.File.FileName;
-            return File(filePath, fileType, fileName);
-        }
-            public void OnPost()
+        public IActionResult OnPostDownloadFile()
         {
             if (ModelState.IsValid)
             {
                 var mode = Request.Form["mode"];
-                Result = Encoder.Vigener(mode == "0" ? Models.Encoder.Mode.ENCRYPT : Models.Encoder.Mode.DECRYPT);
                 if (Encoder.File != null && Encoder.File.Length != 0)
                 {
-                    GetFile();
-                    
-                    /*Response.Clear();
-                    Response.Headers.Clear();
-                    Response.Headers.Add("Content-Disposition", "attachment; filename=" + Encoder.File.FileName);
-                    Response.Headers.Add("Content-Length", Encoder.File.Length.ToString());
-                    Response.ContentType = "multipart/form-data";
-                    await Response.SendFileAsync("wwwroot\\uploads\\document" + (Encoder.File.FileName.EndsWith(".docx") ? ".docx" : ".txt"));*/
+                    Encoder.Text = null;
+                    Result = Encoder.Vigener(mode == "0" ? Models.Encoder.Mode.ENCRYPT : Models.Encoder.Mode.DECRYPT);
+                    string filePath = "uploads\\document" + (Encoder.File.FileName.EndsWith(".docx") ? ".docx" : ".txt");
+                    string fileType = "application/octet-stream";
+                    string fileName = Encoder.File.FileName;
+                    Encoder.File = null;
+                    return File(filePath, fileType, fileName);
                 }
+                Result = Encoder.Vigener(mode == "0" ? Models.Encoder.Mode.ENCRYPT : Models.Encoder.Mode.DECRYPT);
             }
+            else { Result = null; }
+            return null;
         }
         public void OnGet()
         {

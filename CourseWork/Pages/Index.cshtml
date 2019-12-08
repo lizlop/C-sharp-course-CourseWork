@@ -60,10 +60,12 @@
             </script>
         </div>
         <div class="form-group">
-            <button type="submit" class="btn btn-primary">Get the result!</button>
+            <button type="submit" asp-page-handler="DownloadFile" class="btn btn-primary">Get the result!</button>
         </div>
     </form>
+    
     <div class="form-group">
         <label asp-for="Result" for="outputText">Resulting text</label>
         <textarea asp-for="Result" id="outputText" name="Result" class="form-control" rows="5"></textarea>
     </div>
+    
