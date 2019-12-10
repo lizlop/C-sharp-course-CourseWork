@@ -52,6 +52,11 @@ namespace CourseWork.Models
             foreach (var c in Key) if (!Alphabet.Contains(c)) return false;
             return true;
         }
+        private bool CheckEncoding(string line)
+        {
+            foreach (char ch in line) if (ch == 65533) return false;
+            return true;
+        }
         public string Vigener(Mode mode)
         {
             if (Text == null)
@@ -66,13 +71,19 @@ namespace CourseWork.Models
             StringBuilder stringBuilder = new StringBuilder();
             if (File.FileName.Contains(".txt"))
             {
+                bool isUTF8 = true;
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 using (var stream = new StreamReader(File.OpenReadStream()))
                 {
-                    while (stream.Peek() >= 0) stringBuilder.Append(stream.ReadLine());
+                    string line = stream.ReadToEnd();
+                    if ((isUTF8 = CheckEncoding(line))) stringBuilder.AppendLine(line);
                 }
+                if (!isUTF8) 
+                    using (var stream = new StreamReader(File.OpenReadStream(), Encoding.GetEncoding("windows-1251")))
+                        stringBuilder.Append(stream.ReadToEnd());
                 stringBuilder = new StringBuilder(VigenerFromString(mode, stringBuilder.ToString()));
-                using (var fileStream = new StreamWriter("wwwroot\\uploads\\document.txt"))
-                    fileStream.WriteLine(stringBuilder.ToString());
+                using var fileStream = new StreamWriter("wwwroot\\uploads\\document.txt");
+                fileStream.WriteLine(stringBuilder.ToString());
             }
             else if (File.FileName.Contains(".docx"))
             {
