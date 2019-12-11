@@ -33,3 +33,13 @@ Alphabet may consist of any symbols. Note that case of the letters in alphabet d
 The resulting text has only alphabet characters being encrypted/decrypted, other symbols stay unchanged. 
 If you putted the original text in the text area, the result would be shown in the text area below the button. 
 In case of a file, after pressing the button you will get the result file to download.
+
+## Project structure
+
+* CourseWork:
+  * Models:
+    * [Encoder.cs](https://github.com/lizlop/C-sharp-course-CourseWork/blob/master/CourseWork/Models/Encoder.cs) - class that implements algorithm of the cipher. It is model for the `Index` page.
+  * Pages:
+    * [Index.cshtml.cs](https://github.com/lizlop/C-sharp-course-CourseWork/blob/master/CourseWork/Pages/Index.cshtml.cs) - class that contains logic of binding properties and request implementaion.
+* CourseWorkTest:
+  * [EncoderTests.cs](https://github.com/lizlop/C-sharp-course-CourseWork/blob/master/CourseWorkTest/EncoderTests.cs) - class that contains tests for the `Encoder` class to check correctness of cipher implementation and getting result on different input parameters. 
