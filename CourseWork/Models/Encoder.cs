@@ -68,6 +68,7 @@ namespace CourseWork.Models
         }
         public string VigenerFromFile(Mode mode, IFormFile File)
         {
+            if (!Directory.Exists("wwwroot\\uploads")) Directory.CreateDirectory("wwwroot\\uploads");
             StringBuilder stringBuilder = new StringBuilder();
             if (File.FileName.Contains(".txt"))
             {
